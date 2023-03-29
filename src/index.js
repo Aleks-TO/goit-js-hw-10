@@ -10,39 +10,43 @@ const countryListEl = document.querySelector('.country-list');
 const countryInfoEl = document.querySelector('.country-info');
 
 // ставимо слузача на інпут
-searchInputEl.addEventListener('input', debounce(handleSearchCountry, DEBOUNCE_DELAY));
+searchInputEl.addEventListener(
+  'input',
+  debounce(handleSearchCountry, DEBOUNCE_DELAY)
+);
 
 function handleSearchCountry(event) {
-    const nameCountryInput = event.target.value.trim();
-    if (!nameCountryInput) {
-        clearMurkup();
-        Notiflix.Notify.info('Please enter country name');
-        return;
-    }
-    
-    fetchCountries(nameCountryInput)
-    .then(response => {
-        console.log(response)
-        if (response.length > 10) {
-            clearMurkup();
-            Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
-        return;
-        }
-        if (response.length > 2 && response.length < 10) {
-            countryInfoEl.innerHTML = '';
-            createCountryList(response);
+  const nameCountryInput = event.target.value.trim();
+  if (!nameCountryInput) {
+    clearMurkup();
+    Notiflix.Notify.info('Please enter country name');
+    return;
+  }
 
-        }
-        if (response.length === 1) {
-            countryListEl.innerHTML ='';
-            createCountryInfo(response);
-        }
-    })
-    
+  fetchCountries(nameCountryInput).then(response => {
+    console.log(response);
+    if (response.length > 10) {
+      clearMurkup();
+      Notiflix.Notify.info(
+        'Too many matches found. Please enter a more specific name.'
+      );
+      return;
+    }
+    if (response.length >= 2 && response.length <= 10) {
+      countryInfoEl.innerHTML = '';
+      createCountryList(response);
+    }
+    if (response.length === 1) {
+      countryListEl.innerHTML = '';
+      createCountryInfo(response);
+    }
+  });
 }
 function createCountryList(country) {
-    country.map(({name,flags})=>{
-        countryListEl.insertAdjacentHTML('beforeend',
+  country
+    .map(({ name, flags }) => {
+      countryListEl.insertAdjacentHTML(
+        'beforeend',
         ` <li class="country-list__item">
         <img width="30"
           class="country-flag"
@@ -51,15 +55,19 @@ function createCountryList(country) {
         >
         <p class="country-name">${name.official}</p>
       </li>
-        `)
+        `
+      );
     })
+    .join('');
 }
 function createCountryInfo(country) {
-    country.map(({name,flags,capital,population,languages})=>{
-        countryInfoEl.insertAdjacentHTML('beforeend',
+  country
+    .map(({ name, flags, capital, population, languages }) => {
+      countryInfoEl.insertAdjacentHTML(
+        'beforeend',
         `<div class="country__wrapper"><img src='${
-            flags.svg
-          }' class="country-flag" width ="50" alt='flag of ${name.official}' />
+          flags.svg
+        }' class="country-flag" width ="50" alt='flag of ${name.official}' />
       <h2 class='country-name'>${name.official}</h2></div>
       <ul class='country-info__list'>
         <li class='country-info__item'>
@@ -75,10 +83,12 @@ function createCountryInfo(country) {
             ${Object.values(languages)}</p>
         </li>
       </ul>
-        `)
+        `
+      );
     })
+    .join('');
 }
 function clearMurkup() {
-    countryListEl.innerHTML='';
-    countryInfoEl.innerHTML='';
+  countryListEl.innerHTML = '';
+  countryInfoEl.innerHTML = '';
 }
