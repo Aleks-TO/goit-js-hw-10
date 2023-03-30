@@ -80,7 +80,7 @@ function createCountryInfo(country) {
         </li>
         <li class='country-info__item'>
           <p class='languages'><span class='subtitle'>Languages: </span>
-            ${Object.values(languages)}</p>
+            ${Object.values(languages).join(', ')}</p>
         </li>
       </ul>
         `
